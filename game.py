@@ -33,10 +33,10 @@ class Game:
         pygame.init()
 
         self.screen = pygame.display.set_mode((640,320))
+        self.player = PhysicsEntity(self,'player', (50,50),(14,18))
         self.clock = pygame.time.Clock()
         self.movement = [False, False]
 
-        self.player = PhysicsEntity(self,'player', (50,50),(14,18))
         
         self.assets = {
             'player': load_image('entities\player\idle\\0.png'),
@@ -53,6 +53,7 @@ class Game:
     def run(self):
         while True:
             
+            self.clock.tick(60)
             self.screen.fill((100,10,10))
             self.tilemap.render(self.screen)
 
@@ -76,7 +77,7 @@ class Game:
                         self.movement[1] = False
 
             pygame.display.update()
-            self.clock.tick(60)
+            #self.clock.tick(60)
                 
 
 Game().run()

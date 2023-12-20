@@ -13,7 +13,7 @@ class Tilemap:
         self.offgrid_tiles = []
 
         for i in range(10):
-            self.tilemap[str(3 + i) + ';20'] = {'type': 'stone', 'variant':1, 'pos': (3 + i, 20)}
+            self.tilemap[str(3 + i) + ';10'] = {'type': 'stone', 'variant':1, 'pos': (3 + i, 10)}
 
     def tiles_around(self, pos):
         tiles = []
