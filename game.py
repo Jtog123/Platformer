@@ -1,7 +1,7 @@
 import pygame
 import sys
 
-from scripts.utils import load_image, load_images
+from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 
 class PhysicsEntity:
@@ -13,11 +13,18 @@ class PhysicsEntity:
         self.size = size
         self.collisions = { 'up':False, 'down': False, 'right':False, 'left':False}
         self.velocity = [0,0]
+        self.action = ''
 
         self.flip = False
+        self.set_action('idle')
 
     def rect(self):
         return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
+    
+    def set_action(self,action):
+        if action != self.action:
+            self.action = action
+            self.animation = self.game.assets[self.e_type + '/' + self.action].copy()
     
     def update(self, tilemap, movement = (0,0)):
         self.collisions = {'up':False, 'down': False, 'right': False, 'left': False}
@@ -62,11 +69,13 @@ class PhysicsEntity:
 
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
+        
+        self.animation.update()
 
     
     def render(self, surface):
         #surface.blit(self.game.assets['player'], self.position)
-        surface.blit(pygame.transform.flip(self.game.assets['player'], self.flip, False), self.position)
+        surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False), self.position)
 
 #Next we need to design the tile for the floor
 
@@ -77,7 +86,7 @@ class Game:
         pygame.init()
 
         self.screen = pygame.display.set_mode((640,480))
-        self.player = PhysicsEntity(self, 'player', (50,50),(14,18))
+        
         self.clock = pygame.time.Clock()
         self.display = pygame.Surface((320,240))
         self.movement = [False, False]
@@ -85,8 +94,10 @@ class Game:
         
         self.assets = {
             'player': load_image('entities\player\idle\\0.png'),
-            'stone': load_images('tiles\stone\\')
+            'stone': load_images('tiles\stone\\'),
+            'player/idle': Animation(load_images('entities\player\idle'))
         }
+        self.player = PhysicsEntity(self, 'player', (50,50),(14,18))
         self.tilemap = Tilemap(self, tile_size=16)
 
         print(self.assets['stone'][0])
