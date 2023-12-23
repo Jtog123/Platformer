@@ -42,23 +42,3 @@ class Tilemap:
 
             
         
-
-
-'''
-    
-    def render(self,surface, offset = (0,0)):
-        for tile in self.offgrid_tiles:
-            #blitting this type of tile at a specific location
-            surface.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] - offset[0], tile['pos'][1] - offset[1]))
-            
-        
-        for loc in self.tilemap:
-            tile = self.tilemap[loc]
-            #print(tile)
-            #blit each tile by type and variant, at a specfic position
-            surface.blit(self.game.assets[tile['type']][tile['variant']], (tile['pos'][0] * self.tile_size - offset[0], tile['pos'][1] * self.tile_size - offset[1]))
-            #print(self.game.assets[tile['type']][tile['variant']], ([tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size]) )
-    
-        
-
-'''
