@@ -14,6 +14,7 @@ class PhysicsEntity:
         self.collisions = { 'up':False, 'down': False, 'right':False, 'left':False}
         self.velocity = [0,0]
         self.action = ''
+        self.animation_offset = (-3,-3)
 
         self.flip = False
         self.set_action('idle')
@@ -69,15 +70,21 @@ class PhysicsEntity:
 
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
+
+        if movement[0] != 0:
+            self.set_action('run')
+        else:
+            self.set_action('idle')
         
         self.animation.update()
 
     
-    def render(self, surface):
+    def render(self, surface, offset = (0,0)):
         #surface.blit(self.game.assets['player'], self.position)
-        surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False), self.position)
+        surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False),
+                    (self.position[0] - offset[0] + self.animation_offset[0], self.position[1]- offset[1] + self.animation_offset[1])) #animation offset causing buffer???
 
-#Next we need to design the tile for the floor
+#Run animation
 
 
 class Game:
@@ -95,10 +102,13 @@ class Game:
         self.assets = {
             'player': load_image('entities\player\idle\\0.png'),
             'stone': load_images('tiles\stone\\'),
-            'player/idle': Animation(load_images('entities\player\idle'))
+            'player/idle': Animation(load_images('entities\player\idle')),
+            'player/run' : Animation(load_images('entities\player\\run'))
         }
         self.player = PhysicsEntity(self, 'player', (50,50),(14,18))
         self.tilemap = Tilemap(self, tile_size=16)
+
+        self.scroll = [0,0]
 
         print(self.assets['stone'][0])
 
@@ -110,12 +120,21 @@ class Game:
         while True:
             #39,39,68
             self.display.fill((39,39,68))
-            self.tilemap.render(self.display)
+
+            self.scroll[0] += (self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0]) / 30
+
+            self.scroll[1] += (self.player.rect().centery - (self.display.get_height() / 2) - self.scroll[1]) / 30
+
+            self.render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            self.tilemap.render(self.display, offset=self.render_scroll)
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
-            self.player.render(self.display)
+            self.player.render(self.display, offset=self.render_scroll)
 
             pygame.draw.rect(self.display, 'red', self.player.rect(),1)
+            pygame.draw.circle(self.display, 'blue', (self.player.rect().centerx, self.player.rect().bottom), 2)
+            pygame.draw.circle(self.display, 'green', (self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0], self.player.rect().bottom), 2)
             #print(self.player.rect())
 
             for event in pygame.event.get():
