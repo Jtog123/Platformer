@@ -25,6 +25,20 @@ class Tilemap:
                 tiles.append(self.tilemap[check_loc])
         return tiles
     
+    def save(self, path):
+        file = open(path, 'w')
+        json.dump({'tilemap': self.tilemap, 'tile_size': self.tile_size, 'offgrid':self.offgrid_tiles}, file)
+        file.close
+
+    def load(self, path):
+        file = open(path, 'r')
+        map_data = json.load(file)
+        file.close()
+
+        self.tilemap = map_data['tilemap']
+        self.tile_size = map_data['tile_size']
+        self.offgrid_tiles = map_data['offgrid']
+
     def physics_rects_around(self, pos):
         rects = []
         for tile in self.tiles_around(pos):
