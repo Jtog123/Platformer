@@ -4,6 +4,8 @@ import sys
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 
+#Jump, level editor, colliosions head hits bottom are off
+
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size) -> None:
         self.game = game
@@ -14,9 +16,10 @@ class PhysicsEntity:
         self.collisions = { 'up':False, 'down': False, 'right':False, 'left':False}
         self.velocity = [0,0]
         self.action = ''
-        self.animation_offset = (-3,-3)
+        self.animation_offset = (0,0) #-3,3??
 
         self.flip = False
+        self.air_time = 0
         self.set_action('idle')
 
     def rect(self):
@@ -70,8 +73,16 @@ class PhysicsEntity:
 
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
+            
+        
+        self.air_time += 1
 
-        if movement[0] != 0:
+        if self.collisions['down']:
+            self.air_time = 0
+
+        if self.air_time > 4:
+            self.set_action('jump')
+        elif movement[0] != 0:
             self.set_action('run')
         else:
             self.set_action('idle')
@@ -103,7 +114,8 @@ class Game:
             'player': load_image('entities\player\idle\\0.png'),
             'stone': load_images('tiles\stone\\'),
             'player/idle': Animation(load_images('entities\player\idle')),
-            'player/run' : Animation(load_images('entities\player\\run'))
+            'player/run' : Animation(load_images('entities\player\\run')),
+            'player/jump':Animation(load_images('entities\player\jump'))
         }
         self.player = PhysicsEntity(self, 'player', (50,50),(14,18))
         self.tilemap = Tilemap(self, tile_size=16)
