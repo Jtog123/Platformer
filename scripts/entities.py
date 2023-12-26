@@ -29,6 +29,7 @@ class PhysicsEntity:
 
         frame_movement = (movement[0] + self.velocity[0],
                         movement[1] + self.velocity[1])
+        
         self.position[0] += frame_movement[0]
         entity_rect = self.rect()
 

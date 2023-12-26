@@ -4,6 +4,7 @@ import sys
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.entities import PhysicsEntity, Player
+from scripts.clouds import Clouds
 
 #Jump, level editor, colliosions head hits bottom are off
 
@@ -24,10 +25,13 @@ class Game:
             'player': load_image('entities\player\idle\\0.png'),
             'stone': load_images('tiles\stone\\'),
             'decor': load_images('tiles/decor'),
+            'clouds' : load_images('clouds'),
             'player/idle': Animation(load_images('entities\player\idle')),
             'player/run' : Animation(load_images('entities\player\\run')),
             'player/jump':Animation(load_images('entities\player\jump'))
         }
+
+        self.clouds = Clouds(self.assets['clouds'], count = 16)
         self.player = Player(self, (50,50),(14,18))
         self.tilemap = Tilemap(self, tile_size=16)
         self.tilemap.load('map.json')
@@ -50,6 +54,9 @@ class Game:
             self.scroll[1] += (self.player.rect().centery - (self.display.get_height() / 2) - self.scroll[1]) / 30
 
             self.render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+
+            self.clouds.update()
+            self.clouds.render(self.display, offset=self.render_scroll)
 
             self.tilemap.render(self.display, offset=self.render_scroll)
 
