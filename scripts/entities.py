@@ -16,6 +16,13 @@ class PhysicsEntity:
         self.air_time = 0
         self.set_action('idle')
 
+
+        #Program jump aloowance
+        self.can_jump = True
+        #in jump code, if can_jump allow jump, if jumping can_jump = False
+        #in update check if can_jump == True and we have collided with floor can_jump = True
+        #else can jump = False
+
     def rect(self):
         return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
     
@@ -46,7 +53,7 @@ class PhysicsEntity:
 
         self.position[1] += frame_movement[1]
         entity_rect = self.rect()
-
+        
         for rect in tilemap.physics_rects_around(self.position):
             if entity_rect.colliderect(rect):
                 if frame_movement[1] > 0:
@@ -68,14 +75,23 @@ class PhysicsEntity:
 
         if self.collisions['down'] or self.collisions['up']:
             self.velocity[1] = 0
-            
+
+        #Second he starts falling velocity changes direction and can jump is true
+        '''
+        #single jump code
+        if self.velocity[1] < 0:
+            self.can_jump = False
+        elif self.velocity[1] == 0:
+            self.can_jump = True
+        '''            
         self.animation.update()
+
 
     
     def render(self, surface, offset = (0,0)):
         #surface.blit(self.game.assets['player'], self.position)
         surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False),
-                    (self.position[0] - offset[0] + self.animation_offset[0], self.position[1]- offset[1] + self.animation_offset[1])) #animation offset causing buffer???
+                    (self.position[0] - offset[0] + self.animation_offset[0], self.position[1] - offset[1] + self.animation_offset[1])) #animation offset causing buffer???
 
 
 class Player(PhysicsEntity):
@@ -97,3 +113,30 @@ class Player(PhysicsEntity):
             self.set_action('run')
         else:
             self.set_action('idle')
+
+class Enemy(PhysicsEntity):
+    def __init__(self, game, pos, size):
+        super().__init__(game, 'enemy', pos, size)
+
+        self.max_pos = pos[0] + 50
+        self.min_pos = pos[0] - 50
+
+        self.left = True
+        self.right= False
+    
+    def update(self, tilemap, movement = (0,0)):
+        super().update(tilemap, movement=movement)
+
+        if self.left and self.position[0] != self.min_pos:
+            self.position[0] -= .5
+        else:
+            self.left = False
+            self.right= True
+        
+        if self.right and self.position[0] != self.max_pos:
+            self.position[0] += .5
+        else:
+            self.right = False
+            self.left= True
+
+
