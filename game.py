@@ -8,6 +8,7 @@ from scripts.clouds import Clouds
 
 #Jump, level editor, colliosions head hits bottom are off
 
+#G to place things offgrid
 
 class Game:
     def __init__(self) -> None:
@@ -35,13 +36,23 @@ class Game:
 
         self.clouds = Clouds(self.assets['clouds'], count = 16)
         self.player = Player(self, (50,50),(14,18))
-        self.enemy = Enemy(self, (150,50), (18,18))
+        self.enemies = []
         self.tilemap = Tilemap(self, tile_size=16)
         self.tilemap.load('map.json')
 
+        #Gives information 'give type and variant'
+        print(self.tilemap.extract([('decor', 0)], keep = True))
+
+        for spawner in self.tilemap.extract([('spawners',0), ('spawners', 1)]):
+            if spawner['variant'] == 0:
+                self.player.position = spawner['pos']
+            else:
+                self.enemies.append(Enemy(self, spawner['pos'], (18,18)))
+
+
         self.scroll = [0,0]
 
-        print(self.assets['stone'][0])
+       # print(self.assets['stone'][0])
 
     
     def update(self):
@@ -63,11 +74,13 @@ class Game:
 
             self.tilemap.render(self.display, offset=self.render_scroll)
 
+            for enemy in self.enemies.copy():
+                enemy.update(self.tilemap, (0,0))
+                enemy.render(self.display,self.render_scroll)
+
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=self.render_scroll)
 
-            self.enemy.update(self.tilemap, (0,0))
-            self.enemy.render(self.display,self.render_scroll)
 
             pygame.draw.rect(self.display, 'red', self.player.rect(),1)
             pygame.draw.circle(self.display, 'blue', (self.player.rect().centerx, self.player.rect().bottom), 2)

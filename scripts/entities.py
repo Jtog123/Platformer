@@ -1,4 +1,6 @@
 import pygame
+import math
+import random
 
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size) -> None:
@@ -121,22 +123,39 @@ class Enemy(PhysicsEntity):
         self.max_pos = pos[0] + 50
         self.min_pos = pos[0] - 50
 
+        self.walking = 0
+
         self.left = True
         self.right= False
     
     def update(self, tilemap, movement = (0,0)):
+        
+        #maybe use sin function?
+        if self.walking:
+            if tilemap.solid_check((self.rect().centerx + (-7 if self.flip else 7), self.position[1] + 23)):
+                movement = (movement[0]- 0.5 if self.flip else 0.5, movement[1])
+            else:
+                self.flip = not self.flip
+            self.walking = max(0, self.walking)
+        elif random.random() < .01:
+            self.walking = random.randint(10,120)
+
         super().update(tilemap, movement=movement)
 
-        if self.left and self.position[0] != self.min_pos:
-            self.position[0] -= .5
-        else:
-            self.left = False
-            self.right= True
-        
-        if self.right and self.position[0] != self.max_pos:
-            self.position[0] += .5
-        else:
-            self.right = False
-            self.left= True
+
+
+        '''
+                if self.left and self.position[0] != self.min_pos:
+                    self.position[0] -= .5
+                else:
+                    self.left = False
+                    self.right= True
+                
+                if self.right and self.position[0] != self.max_pos:
+                    self.position[0] += .5
+                else:
+                    self.right = False
+                    self.left= True
+        '''
 
 

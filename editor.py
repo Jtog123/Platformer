@@ -19,7 +19,8 @@ class Editor:
 
         self.assets = {
             'decor': load_images('tiles/decor'),
-            'stone': load_images('tiles/stone')
+            'stone': load_images('tiles/stone'),
+            'spawners': load_images('tiles/spawners')
         }
 
         self.movement = [False, False, False, False]
@@ -110,7 +111,7 @@ class Editor:
                     if event.button == 1:
                         self.clicking = False
                     if event.button == 3:
-                        self.right_clicking
+                        self.right_clicking = False
                 
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_a:
