@@ -2,6 +2,9 @@ import pygame
 import math
 import random
 
+
+ 
+
 class PhysicsEntity:
     def __init__(self, game, e_type, pos, size) -> None:
         self.game = game
@@ -137,7 +140,7 @@ class Enemy(PhysicsEntity):
             else:
                 self.flip = not self.flip
             self.walking = max(0, self.walking)
-        elif random.random() < .01:
+        elif random.random() < .1:
             self.walking = random.randint(10,120)
 
         super().update(tilemap, movement=movement)

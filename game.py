@@ -10,6 +10,9 @@ from scripts.clouds import Clouds
 #Jump, level editor, colliosions head hits bottom are off
 
 #G to place things offgrid
+#Build map
+#add enemies
+#add sound
 
 class Game:
     def __init__(self) -> None:
@@ -64,6 +67,13 @@ class Game:
     def update(self):
         pass
 
+    def end_game(self):
+        font = pygame.font.SysFont('Comic Sans MS', 30)
+        text_surface = font.render('Game Over!', False, (255,0,0))
+        self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,(self.display.get_height() / 2) - text_surface.get_height()/2))
+
+        return True
+
     def run(self):
         while True:
             #39,39,68
@@ -85,7 +95,6 @@ class Game:
                 enemy.render(self.display,self.render_scroll)
             
             for enemy in self.enemies2.copy():
-                print(enemy.position[1])
                 enemy.update(self.tilemap, enemy.position[1])
                 enemy.render(self.display, self.render_scroll)
 
@@ -126,6 +135,26 @@ class Game:
             #    print('its over')
             
             #make enemy pace between 100 in x and 150 in x
+                        
+            for enemy in self.enemies:
+                if self.player.rect().colliderect(enemy.rect()):
+                    self.end_game()
+                    
+                    #Load game over screen
+                    #disable controls
+                    print('GAME OVER!')
+            
+            for enemy2 in self.enemies2:
+                if self.player.rect().colliderect(enemy2.rect()):
+                    self.end_game()
+                    #load game over screen
+                    #disable controls
+                    print('GAME OVER!')
+            
+            
+            if self.player.position[1] > self.display.get_height():
+                self.end_game()
+                print('game over!')
             
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
