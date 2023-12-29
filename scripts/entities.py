@@ -79,13 +79,13 @@ class PhysicsEntity:
             self.velocity[1] = 0
 
         #Second he starts falling velocity changes direction and can jump is true
-        '''
+        
         #single jump code
         if self.velocity[1] < 0:
             self.can_jump = False
         elif self.velocity[1] == 0:
             self.can_jump = True
-        '''            
+
         self.animation.update()
 
 
@@ -120,13 +120,13 @@ class Enemy(PhysicsEntity):
     def __init__(self, game, pos, size):
         super().__init__(game, 'enemy', pos, size)
 
-        self.max_pos = pos[0] + 50
-        self.min_pos = pos[0] - 50
+        #self.max_pos = pos[0] + 50
+        #self.min_pos = pos[0] - 50
 
         self.walking = 0
 
-        self.left = True
-        self.right= False
+        #self.left = True
+        #self.right= False
     
     def update(self, tilemap, movement = (0,0)):
         
@@ -141,6 +141,56 @@ class Enemy(PhysicsEntity):
             self.walking = random.randint(10,120)
 
         super().update(tilemap, movement=movement)
+
+class Enemy2:
+        def __init__(self, game, e_type, pos, size) -> None:
+            self.game = game
+            self.screen = self.game.screen
+            self.e_type = e_type
+            self.position = list(pos)
+            self.size = size
+            self.action=''
+            self.flip = False
+            self.animation_offset = (0,0)
+
+            self.max_pos = self.position[1] + 100
+            self.min_pos = self.position[1] - 100
+            self.down = True
+            self.up = False
+
+            self.set_action('idle')
+
+        def rect(self):
+            return pygame.Rect(self.position[0], self.position[1], self.size[0], self.size[1])
+        
+        def set_action(self,action):
+            if action != self.action:
+                self.action = action
+                self.animation = self.game.assets[self.e_type + '/' + self.action].copy()
+
+        def update(self, tilemap, pos):
+            if self.down and pos != self.min_pos:
+                self.position[1] -= 1
+            else:
+                self.down = False
+                self.up = True
+            
+            if self.up and pos != self.max_pos:
+                self.position[1] += 1
+            else:
+                self.up = False
+                self.down = True
+            #self.position[1] = pos
+            #print(self.position[1])
+
+            self.animation.update()
+
+        def render(self, surface, offset=(0,0)):
+            surface.blit(pygame.transform.flip(self.animation.img(), self.flip, False),
+                        (self.position[0] - offset[0] + self.animation_offset[0], self.position[1] - offset[1] + self.animation_offset[1]))
+                    
+            
+        #need set_action function
 
 
 

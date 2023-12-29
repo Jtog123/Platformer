@@ -1,9 +1,10 @@
 import pygame
 import sys
+import math
 
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
-from scripts.entities import PhysicsEntity, Player,Enemy
+from scripts.entities import PhysicsEntity, Player,Enemy,Enemy2
 from scripts.clouds import Clouds
 
 #Jump, level editor, colliosions head hits bottom are off
@@ -25,29 +26,34 @@ class Game:
         self.assets = {
             'player': load_image('entities\player\idle\\0.png'),
             'enemy' : load_image('entities\enemy\idle\\0.png'),
+            'enemy2': load_image('entities\enemy2\idle\\0.png'),
             'stone': load_images('tiles\stone\\'),
             'decor': load_images('tiles/decor'),
             'clouds' : load_images('clouds'),
             'player/idle': Animation(load_images('entities\player\idle')),
             'player/run' : Animation(load_images('entities\player\\run')),
             'player/jump':Animation(load_images('entities\player\jump')),
-            'enemy/idle':Animation(load_images('entities\enemy\idle'), img_duration=10)
+            'enemy/idle':Animation(load_images('entities\enemy\idle'), img_duration=10),
+            'enemy2/idle': Animation(load_images('entities\enemy2\idle'))
         }
 
         self.clouds = Clouds(self.assets['clouds'], count = 16)
         self.player = Player(self, (50,50),(14,18))
         self.enemies = []
+        self.enemies2 = []
         self.tilemap = Tilemap(self, tile_size=16)
         self.tilemap.load('map.json')
 
         #Gives information 'give type and variant'
         print(self.tilemap.extract([('decor', 0)], keep = True))
 
-        for spawner in self.tilemap.extract([('spawners',0), ('spawners', 1)]):
+        for spawner in self.tilemap.extract([('spawners',0), ('spawners', 1), ('spawners', 2)]):
             if spawner['variant'] == 0:
                 self.player.position = spawner['pos']
-            else:
+            elif spawner['variant'] == 1:
                 self.enemies.append(Enemy(self, spawner['pos'], (18,18)))
+            elif spawner['variant'] == 2:
+                self.enemies2.append(Enemy2(self,'enemy2', spawner['pos'], (18,18)))
 
 
         self.scroll = [0,0]
@@ -77,14 +83,22 @@ class Game:
             for enemy in self.enemies.copy():
                 enemy.update(self.tilemap, (0,0))
                 enemy.render(self.display,self.render_scroll)
+            
+            for enemy in self.enemies2.copy():
+                print(enemy.position[1])
+                enemy.update(self.tilemap, enemy.position[1])
+                enemy.render(self.display, self.render_scroll)
+
+            
+
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=self.render_scroll)
 
 
-            pygame.draw.rect(self.display, 'red', self.player.rect(),1)
-            pygame.draw.circle(self.display, 'blue', (self.player.rect().centerx, self.player.rect().bottom), 2)
-            pygame.draw.circle(self.display, 'green', ((self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0]) / 30, self.player.rect().bottom), 2)
+            #pygame.draw.rect(self.display, 'red', self.player.rect(),1)
+            #pygame.draw.circle(self.display, 'blue', (self.player.rect().centerx, self.player.rect().bottom), 2)
+            #pygame.draw.circle(self.display, 'green', ((self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0]) / 30, self.player.rect().bottom), 2)
             #print(self.player.rect())
 
             for event in pygame.event.get():
@@ -112,7 +126,7 @@ class Game:
             #    print('its over')
             
             #make enemy pace between 100 in x and 150 in x
-
+            
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
 
