@@ -9,7 +9,7 @@ SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
 
 def get_font(size): # Returns Press-Start-2P in the desired size
-    return pygame.font.SysFont('Comic Sans MS', size)
+    return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
 
 def play():
 
