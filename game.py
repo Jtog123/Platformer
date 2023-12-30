@@ -10,10 +10,6 @@ from scripts.clouds import Clouds
 
 
 
-
-
-
-
 class Game:
     def __init__(self) -> None:
         
@@ -82,7 +78,6 @@ class Game:
         text_surface = font.render('Game Over!', False, (255,0,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,(self.display.get_height() / 2) - text_surface.get_height()/2))
 
-        return True
 
     def run(self):
         while True:

@@ -8,7 +8,7 @@ pygame.init()
 SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
 
-def get_font(size): # Returns Press-Start-2P in the desired size
+def get_font(size):
     return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
 
 def play():
@@ -17,7 +17,8 @@ def play():
     if new_game.run():
         new_game.run()
     else:
-        #Load game over menu
+        #Load game over screen
+        new_game.end_game()
         main_menu()
 
 
@@ -49,8 +50,6 @@ def main_menu():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.check_for_input(MENU_MOUSE_POS):
                     play()
-                #if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
-                #   options()
                 if QUIT_BUTTON.check_for_input(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()
