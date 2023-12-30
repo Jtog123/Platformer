@@ -158,13 +158,15 @@ class Game:
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
                     self.end_game()
+                    return False
                     #load game over screen
                     #disable controls
                     print('GAME OVER!')
             
             
-            if self.player.position[1] > self.display.get_height():
+            if self.player.position[1] > self.display.get_height(): #or self.screen?
                 self.end_game()
+                return False
                 print('game over!')
             
 

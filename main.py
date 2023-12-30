@@ -27,15 +27,14 @@ def main_menu():
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#fbf5ef")
         MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN.get_width() / 2, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(SCREEN.get_width() / 2, 200), 
-                                text_input="PLAY", font=get_font(25), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN.get_width() / 2, 350), 
-                                text_input="QUIT", font=get_font(25), base_color="#d7fcd4", hovering_color="White")
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/playbutton.png"), pos=(SCREEN.get_width() / 2, 200), 
+                                text_input="PLAY", font=get_font(25), base_color="#494d7e", hovering_color="#fbf5ef")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/playbutton.png"), pos=(SCREEN.get_width() / 2, 350), 
+                                text_input="QUIT", font=get_font(25), base_color="#494d7e", hovering_color="#fbf5ef")
         
-        pygame.draw.rect(SCREEN,'red', QUIT_BUTTON.text_rect, 2)
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
