@@ -84,6 +84,7 @@ class PhysicsEntity:
         #Second he starts falling velocity changes direction and can jump is true
         
         #single jump code
+    
         if self.velocity[1] < 0:
             self.can_jump = False
         elif self.velocity[1] == 0:

@@ -1,28 +1,31 @@
 import pygame
 import sys
 import math
+import pygame_menu
 
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.entities import PhysicsEntity, Player,Enemy,Enemy2
 from scripts.clouds import Clouds
 
-#Jump, level editor, colliosions head hits bottom are off
 
-#G to place things offgrid
-#Build map
-#add enemies
-#add sound
+
+
+
+
 
 class Game:
     def __init__(self) -> None:
         
-        pygame.init()
+        #pygame.init()
+
+        
 
         self.screen = pygame.display.set_mode((640,480))
         
         self.clock = pygame.time.Clock()
         self.display = pygame.Surface((320,240))
+        self.load_menu()
         self.movement = [False, False]
 
         
@@ -62,6 +65,13 @@ class Game:
         self.scroll = [0,0]
 
        # print(self.assets['stone'][0])
+        
+    def load_menu(self):
+        font = pygame.font.SysFont('Comic Sans MS', 30)
+        menu_surface = pygame.Surface((320,240))
+        
+        self.display.blit(menu_surface, (0,0))
+
 
     
     def update(self):
@@ -163,7 +173,7 @@ class Game:
             self.clock.tick(60)
                 
 
-Game().run()
+#Game().run()
     
 
     
