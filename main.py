@@ -5,34 +5,41 @@ from button import Button
 
 pygame.init()
 
-SCREEN = pygame.display.set_mode((1280,720))
+SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
 
 def get_font(size): # Returns Press-Start-2P in the desired size
-    return pygame.font.Font("assets/font.ttf", size)
+    return pygame.font.SysFont('Comic Sans MS', size)
 
 def play():
+
     new_game = Game()
-    new_game.run()
+    if new_game.run():
+        new_game.run()
+    else:
+        #Load game over menu
+        main_menu()
+
 
 def main_menu():
     while True:
         SCREEN.blit(BG, (0,0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
-        MENU_TEXT = get_font(100).render("MAIN MENU", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(640, 250), 
-                                text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("assets/Options Rect.png"), pos=(640, 400), 
-                                text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(640, 550), 
-                                text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
+        MENU_TEXT = get_font(50).render("MAIN MENU", True, "#b68f40")
+        MENU_RECT = MENU_TEXT.get_rect(center=(SCREEN.get_width() / 2, 100))
+
+        PLAY_BUTTON = Button(image=pygame.image.load("assets/Play Rect.png"), pos=(SCREEN.get_width() / 2, 200), 
+                                text_input="PLAY", font=get_font(25), base_color="#d7fcd4", hovering_color="White")
+        QUIT_BUTTON = Button(image=pygame.image.load("assets/Quit Rect.png"), pos=(SCREEN.get_width() / 2, 350), 
+                                text_input="QUIT", font=get_font(25), base_color="#d7fcd4", hovering_color="White")
+        
+        pygame.draw.rect(SCREEN,'red', QUIT_BUTTON.text_rect, 2)
 
         SCREEN.blit(MENU_TEXT, MENU_RECT)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
+        for button in [PLAY_BUTTON, QUIT_BUTTON]:
             button.change_color(MENU_MOUSE_POS)
             button.update(SCREEN)
             

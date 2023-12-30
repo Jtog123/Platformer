@@ -149,6 +149,7 @@ class Game:
             for enemy in self.enemies:
                 if self.player.rect().colliderect(enemy.rect()):
                     self.end_game()
+                    return False
                     
                     #Load game over screen
                     #disable controls
