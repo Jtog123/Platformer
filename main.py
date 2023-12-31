@@ -17,16 +17,8 @@ main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
 
 
-try:
-    main_menu_channel.play(pygame.mixer.Sound(main_menu_song), loops=-1, fade_ms=5000)
-    #pygame.mixer.music.load(main_menu_song)
-    #pygame.mixer.music.play(-1,0,5000)
-    #pygame.mixer.music.queue('assets/mainmenusong.wav')
-except pygame.error:
-    print(f'cannot load music file (f{main_menu_song}')
+
     
-
-
 
 
 
@@ -49,11 +41,15 @@ def play():
 
 
 def main_menu():
-    #load_main_menu_music()
-    while True:
-        SCREEN.blit(BG, (0,0))
 
-        
+    try:
+        main_menu_channel.play(pygame.mixer.Sound(main_menu_song), loops=-1, fade_ms=5000)
+    except pygame.error:
+        print(f'cannot load music file (f{main_menu_song}')
+
+    while True:
+        play_channel.stop()
+        SCREEN.blit(BG, (0,0))
 
         MENU_MOUSE_POS = pygame.mouse.get_pos()
 
