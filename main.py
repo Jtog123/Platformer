@@ -11,14 +11,17 @@ SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
 #playingsongmp3.mp3
 main_menu_song = 'assets/playingsongmp3.mp3'
+playing_song = 'assets/mainmenusong.wav'
+
+main_menu_channel = pygame.mixer.Channel(0)
+play_channel = pygame.mixer.Channel(1)
 
 
 try:
+    main_menu_channel.play(pygame.mixer.Sound(main_menu_song), loops=-1, fade_ms=5000)
     #pygame.mixer.music.load(main_menu_song)
-    #pygame.mixer.music.play(-1, 0 ,5000)      
-
-    pygame.mixer_music.load(main_menu_song)
-    pygame.mixer_music.play(-1,0,5000)
+    #pygame.mixer.music.play(-1,0,5000)
+    #pygame.mixer.music.queue('assets/mainmenusong.wav')
 except pygame.error:
     print(f'cannot load music file (f{main_menu_song}')
     
@@ -31,6 +34,10 @@ def get_font(size):
     return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
 
 def play():
+    main_menu_channel.stop()
+    play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
+
+
     new_game = Game()
     if new_game.run():
         new_game.run()
