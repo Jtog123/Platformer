@@ -11,7 +11,7 @@ SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
 #playingsongmp3.mp3
 main_menu_song = 'assets/playingsongmp3.mp3'
-playing_song = 'assets/mainmenusong.wav'
+playing_song = 'assets/newplayingsong2.mp3'
 
 main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
