@@ -3,51 +3,58 @@ import sys
 from game import Game
 from button import Button
 
+
 pygame.mixer.pre_init(44100,-16,2, 1024)
 pygame.mixer.init()
 pygame.init()
 
 SCREEN = pygame.display.set_mode((640, 480))
 BG = pygame.image.load("assets/Background.png")
-#playingsongmp3.mp3
+
 main_menu_song = 'assets/playingsongmp3.mp3'
 playing_song = 'assets/newplayingsong2.mp3'
 
 main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
 
-
-
-    
-
-
+GAME_OVER = False
+new_game = Game()
 
 def get_font(size):
     return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
 
+def play_menu_music():
+    try:
+        main_menu_channel.play(pygame.mixer.Sound(main_menu_song), loops=-1, fade_ms=5000)
+    except pygame.error:
+        print(f'cannot load music file (f{main_menu_song}')
+
+
+
 def play():
     main_menu_channel.stop()
     play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
-
 
     new_game = Game()
     if new_game.run():
         new_game.run()
     else:
         #Load game over screen
-        new_game.end_game()
-        main_menu()
+        #if new_game.run() == False:
+        if new_game.load_end_screen():
+            print('bye')
+            main_menu()
+
 
 
 
 def main_menu():
 
-    try:
-        main_menu_channel.play(pygame.mixer.Sound(main_menu_song), loops=-1, fade_ms=5000)
-    except pygame.error:
-        print(f'cannot load music file (f{main_menu_song}')
+    play_menu_music()
 
     while True:
+
+
         play_channel.stop()
         SCREEN.blit(BG, (0,0))
 
@@ -74,8 +81,7 @@ def main_menu():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if PLAY_BUTTON.check_for_input(MENU_MOUSE_POS):
-                    play()
-                    
+                    play()   
                 if QUIT_BUTTON.check_for_input(MENU_MOUSE_POS):
                     pygame.quit()
                     sys.exit()

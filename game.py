@@ -1,7 +1,7 @@
 import pygame
 import sys
 import math
-import pygame_menu
+
 
 from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
@@ -21,7 +21,7 @@ class Game:
         
         self.clock = pygame.time.Clock()
         self.display = pygame.Surface((320,240))
-        self.load_menu()
+        #self.load_menu()
         self.movement = [False, False]
 
         
@@ -47,7 +47,7 @@ class Game:
         self.tilemap.load('map.json')
 
         #Gives information 'give type and variant'
-        print(self.tilemap.extract([('decor', 0)], keep = True))
+        #print(self.tilemap.extract([('decor', 0)], keep = True))
 
         for spawner in self.tilemap.extract([('spawners',0), ('spawners', 1), ('spawners', 2)]):
             if spawner['variant'] == 0:
@@ -59,24 +59,31 @@ class Game:
 
 
         self.scroll = [0,0]
+        self.start_time = pygame.time.get_ticks()
+        self.timer_seconds = 3
 
        # print(self.assets['stone'][0])
         
-    def load_menu(self):
-        font = pygame.font.SysFont('Comic Sans MS', 30)
-        menu_surface = pygame.Surface((320,240))
-        
-        self.display.blit(menu_surface, (0,0))
-
 
     
     def update(self):
         pass
 
-    def end_game(self):
-        font = pygame.font.SysFont('Comic Sans MS', 30)
+    def load_end_screen(self):
+        font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('Game Over!', False, (255,0,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,(self.display.get_height() / 2) - text_surface.get_height()/2))
+        now_time = pygame.time.get_ticks()
+        #amount of time weve been playing
+        #amount of time were at now - amount of time since we started
+        seconds = (now_time - self.start_time) / 1000
+
+        
+
+        #if 3 seconds pass return True
+        print(seconds)
+        return True
+        
 
 
     def run(self):
@@ -135,24 +142,16 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
 
-            #End game code?
-            #if self.player.rect().colliderect(self.enemy.rect()):
-            #    print('its over')
-            
-            #make enemy pace between 100 in x and 150 in x
-                        
+          
             for enemy in self.enemies:
                 if self.player.rect().colliderect(enemy.rect()):
-                    self.end_game()
+                    self.load_end_screen()
                     return False
-                    
-                    #Load game over screen
-                    #disable controls
-                    print('GAME OVER!')
-            
+
+           
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
-                    self.end_game()
+                    self.load_end_screen()
                     return False
                     #load game over screen
                     #disable controls
@@ -160,7 +159,7 @@ class Game:
             
             
             if self.player.position[1] > self.display.get_height(): #or self.screen?
-                self.end_game()
+                self.load_end_screen()
                 return False
                 print('game over!')
             
