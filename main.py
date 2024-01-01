@@ -45,11 +45,6 @@ def play():
             new_game.load_end_screen()
             main_menu()
 
-def load_end():
-    font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
-    text_surface = font.render('Game Over!', False, (255,0,0))
-    new_game.display.blit(text_surface,((new_game.display.get_width() / 2) - text_surface.get_width() / 2,(new_game.display.get_height() / 2) - text_surface.get_height()/2))
-
 
 
 def main_menu():

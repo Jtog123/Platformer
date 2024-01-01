@@ -1,6 +1,7 @@
 import pygame
 import sys
 import math
+import time
 
 
 from scripts.utils import load_image, load_images, Animation
@@ -59,7 +60,7 @@ class Game:
 
 
         self.scroll = [0,0]
-        self.start_time = pygame.time.get_ticks()
+
         self.timer_seconds = 3
 
         self.game_end = 0
@@ -81,11 +82,11 @@ class Game:
         now_time = pygame.time.get_ticks()
         
         # total amount of time weve been playing the game before death
-        seconds = (now_time - self.game_end) / 1000
-        print(seconds)
+        #seconds = (now_time - self.game_end) / 1000
+        #print(seconds)
 
 
-        if seconds > 3:
+        if time.time() - self.start_time > 3:
             return True
         
 
@@ -97,7 +98,9 @@ class Game:
 
     def run(self):
         while True:
-            #39,39,68
+
+            self.start_time = time.time()
+            
             self.display.fill((39,39,68))
 
             self.scroll[0] += (self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0]) / 30
