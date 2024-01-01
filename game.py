@@ -8,6 +8,7 @@ from scripts.utils import load_image, load_images, Animation
 from scripts.tilemap import Tilemap
 from scripts.entities import PhysicsEntity, Player,Enemy,Enemy2
 from scripts.clouds import Clouds
+from scripts.finishflag import FinishFlag
 
 
 
@@ -32,6 +33,7 @@ class Game:
             'enemy2': load_image('entities\enemy2\idle\\0.png'),
             'stone': load_images('tiles\stone\\'),
             'decor': load_images('tiles/decor'),
+            'finishflag': load_images('tiles/finishflag'),
             'clouds' : load_images('clouds'),
             'player/idle': Animation(load_images('entities\player\idle')),
             'player/run' : Animation(load_images('entities\player\\run')),
@@ -47,6 +49,14 @@ class Game:
         self.tilemap = Tilemap(self, tile_size=16)
         self.tilemap.load('map.json')
 
+        print(self.assets['finishflag'])
+        self.finish_flag_pairs= self.tilemap.extract([('finishflag', 0)])[0]
+        print(self.finish_flag_pairs)
+        self.finishflag = FinishFlag((int(self.finish_flag_pairs['pos'][0]),int(self.finish_flag_pairs['pos'][1])), self.assets['finishflag'][0], (10,100))
+        #for flag in self.finishflag:
+        #print(self.finishflag['pos'])
+        
+
         #Gives information 'give type and variant'
         #print(self.tilemap.extract([('decor', 0)], keep = True))
 
@@ -60,6 +70,7 @@ class Game:
 
 
         self.scroll = [0,0]
+        self.game_over = False
 
         self.timer_seconds = 3
 
@@ -82,12 +93,11 @@ class Game:
         now_time = pygame.time.get_ticks()
         
         # total amount of time weve been playing the game before death
-        #seconds = (now_time - self.game_end) / 1000
-        #print(seconds)
+        seconds = (now_time - self.game_end) / 1000
+        print(seconds)
 
 
-        if time.time() - self.start_time > 3:
-            return True
+        
         
 
         #if 3 seconds pass after death of character return True
@@ -113,6 +123,8 @@ class Game:
             self.clouds.render(self.display, offset=self.render_scroll)
 
             self.tilemap.render(self.display, offset=self.render_scroll)
+
+            self.finishflag.render(self.display, offset=self.render_scroll)
 
             for enemy in self.enemies.copy():
                 enemy.update(self.tilemap, (0,0))
@@ -182,6 +194,10 @@ class Game:
                 
                 return False
                 print('game over!')
+
+            if self.player.rect().colliderect(self.finishflag.rect()):
+            #if self.player.position[0] >= self.finishflag['pos'][0]:
+                print('GAME HAS BEEN WON')
             
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))

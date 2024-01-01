@@ -20,6 +20,7 @@ class Editor:
         self.assets = {
             'decor': load_images('tiles/decor'),
             'stone': load_images('tiles/stone'),
+            'finishflag': load_images('tiles/finishflag'),
             'spawners': load_images('tiles/spawners')
         }
 
