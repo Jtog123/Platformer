@@ -14,10 +14,12 @@ BG = pygame.image.load("assets/Background.png")
 main_menu_song = 'assets/playingsongmp3.mp3'
 playing_song = 'assets/newplayingsong2.mp3'
 
+game_mixer = pygame.mixer
+
 main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
+game_channel = pygame.mixer.Channel(2)
 
-GAME_OVER = False
 #new_game = Game()
 
 def get_font(size):
@@ -33,9 +35,9 @@ def play_menu_music():
 
 def play():
     main_menu_channel.stop()
-    play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
+    #play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
 
-    new_game = Game()
+    new_game = Game(game_mixer)
     if new_game.run():
         new_game.run()
     else:
@@ -85,5 +87,4 @@ def main_menu():
         
 
 main_menu()
-
 

@@ -13,11 +13,18 @@ from scripts.finishflag import FinishFlag
 
 
 class Game:
-    def __init__(self) -> None:
+    def __init__(self, mixer) -> None:
         
         #pygame.init()
 
-        
+        self.mixer = mixer
+
+        self.play_channel = self.mixer.Channel(1)
+        self.game_won_channel = self.mixer.Channel(2)
+        self.playing_song = 'assets/newplayingsong2.mp3'
+        self.win_song = 'assets/winsong1.mp3'
+
+
 
         self.screen = pygame.display.set_mode((640,480))
         
@@ -50,6 +57,7 @@ class Game:
         self.tilemap.load('map.json')
         self.start_time = pygame.time.get_ticks()
 
+
         print(self.assets['finishflag'])
         self.finish_flag_pairs= self.tilemap.extract([('finishflag', 0)])[0]
         print(self.finish_flag_pairs)
@@ -74,6 +82,10 @@ class Game:
 
         self.game_end = 0
         self.touched = False
+
+        self.play_channel.play(pygame.mixer.Sound(self.playing_song), loops=-1)
+
+
 
         
 
@@ -101,6 +113,13 @@ class Game:
             return seconds
         else:
             return .01
+        
+    def load_fall_screen(self):
+        font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
+        text_surface = font.render('Game Over!', False, (255,0,0))
+        self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
+                                        (self.display.get_height() / 2) - text_surface.get_height()/ 2)) 
+
 
 
     def load_win_screen(self):
@@ -112,7 +131,6 @@ class Game:
         
         self.win_time = pygame.time.get_ticks()
         seconds = (self.win_time - self.game_end) / 1000
-        print(seconds)
 
         if seconds >= 2:
             return seconds
@@ -200,20 +218,12 @@ class Game:
                     seconds = self.load_lose_screen()
                     if seconds >= .1:
                         pygame.event.set_allowed(pygame.KEYDOWN)
+                        self.play_channel.stop()
                         return False
                     print(seconds)
                     
                     
-            '''
-                
-            for enemy in self.enemies:
-                if self.player.rect().colliderect(enemy.rect()):
-                    self.load_lose_screen()
-                    
-                    #return self.load_lose_screen()
-                    #return False
 
-           '''
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
                     if self.touched == False:
@@ -224,26 +234,34 @@ class Game:
                     seconds = self.load_lose_screen()
                     if seconds >= .1:
                         pygame.event.set_allowed(pygame.KEYDOWN)
+                        self.play_channel.stop()
                         return False
 
                      
             if self.player.position[1] >= self.display.get_height(): 
                 print(self.player.position[1], self.display.get_height())
                 self.game_end = pygame.time.get_ticks()#or self.screen?
-                self.load_lose_screen()
+                self.load_fall_screen()#??????????????????
                 if self.game_end / 1000 >= 3:
+                    self.play_channel.stop()
                     return False
                 
 
             if self.player.rect().colliderect(self.finishflag.rect()):
+                self.play_channel.stop()
+                self.game_won_channel.play(pygame.mixer.Sound(self.win_song))
                 if self.touched == False:
                     pygame.event.set_blocked(pygame.KEYDOWN)
                     self.game_end = pygame.time.get_ticks()
                 
                 self.touched = True
+                
+                
                 seconds = self.load_win_screen()
+                
+                #sound.play(pygame.mixer.Sound(self.win_song))
 
-                if seconds >= 2:
+                if seconds >= 3:
                     pygame.event.set_allowed(pygame.KEYDOWN)
                     return False
       

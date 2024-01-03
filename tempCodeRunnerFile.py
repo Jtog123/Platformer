@@ -1,1 +1,1 @@
-            print('bye')
+play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
