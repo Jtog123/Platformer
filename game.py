@@ -92,10 +92,16 @@ class Game:
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('Game Over!', False, (255,0,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
-                                        (self.display.get_height() / 2) - text_surface.get_height()/2))    
-            
-        #Wait 3 seconds then return False   
-        return False
+                                        (self.display.get_height() / 2) - text_surface.get_height()/2)) 
+
+        now_time = pygame.time.get_ticks()
+        seconds = (now_time - self.game_end) / 1000
+
+        print(seconds)
+
+        if seconds >= 3:
+            #Wait 3 seconds then return False   
+            return False
 
         
         #pygame.time.delay(1000)
@@ -185,7 +191,7 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
 
-            '''
+            
             for enemy in self.enemies:
                 if self.player.rect().colliderect(enemy.rect()):
                     if self.touched == False:
@@ -193,7 +199,8 @@ class Game:
                     
                     self.touched = True
                     self.load_lose_screen()
-                    return False
+                    
+                    
             '''
                 
             for enemy in self.enemies:
@@ -203,7 +210,7 @@ class Game:
                     #return self.load_lose_screen()
                     #return False
 
-           
+           '''
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
                     self.game_end = pygame.time.get_ticks()
