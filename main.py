@@ -20,7 +20,6 @@ main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
 game_channel = pygame.mixer.Channel(2)
 
-#new_game = Game()
 
 def get_font(size):
     return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
@@ -31,18 +30,16 @@ def play_menu_music():
     except pygame.error:
         print(f'cannot load music file (f{main_menu_song}')
 
-#new_game = Game()
 
 def play():
     main_menu_channel.stop()
-    #play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
+
 
     new_game = Game(game_mixer)
     if new_game.run():
         new_game.run()
     else:
         main_menu()
-
 
 
 def main_menu():

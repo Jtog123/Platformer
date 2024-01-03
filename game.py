@@ -1,7 +1,5 @@
 import pygame
 import sys
-import math
-import time
 
 
 from scripts.utils import load_image, load_images, Animation
@@ -11,12 +9,9 @@ from scripts.clouds import Clouds
 from scripts.finishflag import FinishFlag
 
 
-
 class Game:
     def __init__(self, mixer) -> None:
         
-        #pygame.init()
-
         self.mixer = mixer
 
         self.play_channel = self.mixer.Channel(1)
@@ -24,13 +19,10 @@ class Game:
         self.playing_song = 'assets/newplayingsong2.mp3'
         self.win_song = 'assets/winsong1.mp3'
 
-
-
         self.screen = pygame.display.set_mode((640,480))
         
         self.clock = pygame.time.Clock()
         self.display = pygame.Surface((320,240))
-        #self.load_menu()
         self.movement = [False, False]
 
         
@@ -57,17 +49,10 @@ class Game:
         self.tilemap.load('map.json')
         self.start_time = pygame.time.get_ticks()
 
-
-        print(self.assets['finishflag'])
+ 
         self.finish_flag_pairs= self.tilemap.extract([('finishflag', 0)])[0]
-        print(self.finish_flag_pairs)
         self.finishflag = FinishFlag((int(self.finish_flag_pairs['pos'][0]),int(self.finish_flag_pairs['pos'][1])), self.assets['finishflag'][0], (10,100))
-        #for flag in self.finishflag:
-        #print(self.finishflag['pos'])
-        
 
-        #Gives information 'give type and variant'
-        #print(self.tilemap.extract([('decor', 0)], keep = True))
 
         for spawner in self.tilemap.extract([('spawners',0), ('spawners', 1), ('spawners', 2)]):
             if spawner['variant'] == 0:
@@ -83,14 +68,10 @@ class Game:
         self.game_end = 0
         self.touched = False
 
-        self.play_channel.play(pygame.mixer.Sound(self.playing_song), loops=-1)
-
-
-
-        
-
-       # print(self.assets['stone'][0])
-        
+        try:
+            self.play_channel.play(pygame.mixer.Sound(self.playing_song), loops=-1)
+        except pygame.error:
+            print(f'cannot load music file (f{self.playing_song}')
 
     
     def update(self):
@@ -105,9 +86,6 @@ class Game:
 
         self.now_time = pygame.time.get_ticks()
         seconds = (self.now_time - self.game_end) / 1000
-        
-
-        #print(seconds)
 
         if seconds >= .1:
             return seconds
@@ -121,10 +99,7 @@ class Game:
                                         (self.display.get_height() / 2) - text_surface.get_height()/ 2)) 
 
 
-
     def load_win_screen(self):
-        #Queue win music
-
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('You Win!', False, (0,255,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
@@ -139,19 +114,8 @@ class Game:
             return .01
 
 
-        
-        
-
-        #if 3 seconds pass after death of character return True
-        #print(seconds)
-        #return True
-        
-
-
     def run(self):
         while True:
-
-            #self.start_time = time.time()
             
             self.display.fill((39,39,68))
 
@@ -176,17 +140,10 @@ class Game:
                 enemy.update(self.tilemap, enemy.position[1])
                 enemy.render(self.display, self.render_scroll)
 
-            
-
 
             self.player.update(self.tilemap, (self.movement[1] - self.movement[0], 0))
             self.player.render(self.display, offset=self.render_scroll)
 
-
-            #pygame.draw.rect(self.display, 'red', self.player.rect(),1)
-            #pygame.draw.circle(self.display, 'blue', (self.player.rect().centerx, self.player.rect().bottom), 2)
-            #pygame.draw.circle(self.display, 'green', ((self.player.rect().centerx - (self.display.get_width() / 2) - self.scroll[0]) / 30, self.player.rect().bottom), 2)
-            #print(self.player.rect())
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -251,7 +208,11 @@ class Game:
             if self.player.rect().colliderect(self.finishflag.rect()):
                 if self.touched == False:
                     self.play_channel.stop()
-                    self.game_won_channel.play(pygame.mixer.Sound(self.win_song))
+                    try:
+                        self.game_won_channel.play(pygame.mixer.Sound(self.win_song))
+                    except pygame.error:
+                        print(f'cannot load music file (f{self.win_song}')
+
                     pygame.event.set_blocked(pygame.KEYDOWN)
                     self.game_end = pygame.time.get_ticks()
                 
@@ -268,9 +229,6 @@ class Game:
 
             pygame.display.update()
             self.clock.tick(60)
-                
 
-#Game().run()
-    
 
     
