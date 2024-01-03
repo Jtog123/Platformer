@@ -124,6 +124,7 @@ class Game:
 
     def load_win_screen(self):
         #Queue win music
+
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('You Win!', False, (0,255,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
@@ -248,18 +249,15 @@ class Game:
                 
 
             if self.player.rect().colliderect(self.finishflag.rect()):
-                self.play_channel.stop()
-                self.game_won_channel.play(pygame.mixer.Sound(self.win_song))
                 if self.touched == False:
+                    self.play_channel.stop()
+                    self.game_won_channel.play(pygame.mixer.Sound(self.win_song))
                     pygame.event.set_blocked(pygame.KEYDOWN)
                     self.game_end = pygame.time.get_ticks()
                 
                 self.touched = True
                 
-                
                 seconds = self.load_win_screen()
-                
-                #sound.play(pygame.mixer.Sound(self.win_song))
 
                 if seconds >= 3:
                     pygame.event.set_allowed(pygame.KEYDOWN)
