@@ -18,7 +18,7 @@ main_menu_channel = pygame.mixer.Channel(0)
 play_channel = pygame.mixer.Channel(1)
 
 GAME_OVER = False
-new_game = Game()
+#new_game = Game()
 
 def get_font(size):
     return pygame.font.Font("assets/Handy00-YV1o.ttf", size)
@@ -35,15 +35,15 @@ def play():
     main_menu_channel.stop()
     play_channel.play(pygame.mixer.Sound(playing_song), loops=-1)
 
-    #new_game = Game()
+    new_game = Game()
     if new_game.run():
         new_game.run()
     else:
         #Load game over screen
         if new_game.run() == False:
             print('bye')
-            new_game.load_end_screen()
-            main_menu()
+            #new_game.load_lose_screen()
+            #main_menu()
 
 
 

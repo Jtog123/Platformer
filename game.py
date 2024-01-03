@@ -48,6 +48,7 @@ class Game:
         self.enemies2 = []
         self.tilemap = Tilemap(self, tile_size=16)
         self.tilemap.load('map.json')
+        self.start_time = pygame.time.get_ticks()
 
         print(self.assets['finishflag'])
         self.finish_flag_pairs= self.tilemap.extract([('finishflag', 0)])[0]
@@ -86,15 +87,33 @@ class Game:
     def update(self):
         pass
 
-    def load_end_screen(self):
+    def load_lose_screen(self):
+
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('Game Over!', False, (255,0,0))
-        self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,(self.display.get_height() / 2) - text_surface.get_height()/2))
-        now_time = pygame.time.get_ticks()
+        self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
+                                        (self.display.get_height() / 2) - text_surface.get_height()/2))    
+            
+        #Wait 3 seconds then return False   
+        return False
+
         
+        #pygame.time.delay(1000)
+
+
+     
         # total amount of time weve been playing the game before death
-        seconds = (now_time - self.game_end) / 1000
-        print(seconds)
+        #seconds = (now_time - self.game_end) / 1000
+        #print(seconds)
+
+        #now wait 3 seconds and return False
+
+    def load_win_screen(self):
+        font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
+        text_surface = font.render('You Win!', False, (0,255,0))
+        self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
+                                        (self.display.get_height() / 2) - text_surface.get_height()/2))
+
 
 
         
@@ -109,7 +128,7 @@ class Game:
     def run(self):
         while True:
 
-            self.start_time = time.time()
+            #self.start_time = time.time()
             
             self.display.fill((39,39,68))
 
@@ -166,23 +185,31 @@ class Game:
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
 
-          
+            '''
             for enemy in self.enemies:
                 if self.player.rect().colliderect(enemy.rect()):
                     if self.touched == False:
                         self.game_end = pygame.time.get_ticks()
                     
                     self.touched = True
-                    self.load_end_screen()
+                    self.load_lose_screen()
                     return False
+            '''
+                
+            for enemy in self.enemies:
+                if self.player.rect().colliderect(enemy.rect()):
+                    self.load_lose_screen()
+                    
+                    #return self.load_lose_screen()
+                    #return False
 
            
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
                     self.game_end = pygame.time.get_ticks()
-                    self.load_end_screen()
+                    self.load_lose_screen()
                     
-                    return False
+                    #return False
                     #load game over screen
                     #disable controls
                     print('GAME OVER!')
@@ -190,14 +217,14 @@ class Game:
             
             if self.player.position[1] > self.display.get_height(): 
                 self.game_end = pygame.time.get_ticks()#or self.screen?
-                self.load_end_screen()
+                self.load_lose_screen()
                 
-                return False
+                #return False
                 print('game over!')
 
             if self.player.rect().colliderect(self.finishflag.rect()):
-            #if self.player.position[0] >= self.finishflag['pos'][0]:
                 print('GAME HAS BEEN WON')
+                self.load_win_screen()
             
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
