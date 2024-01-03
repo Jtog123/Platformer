@@ -96,13 +96,14 @@ class Game:
 
         self.now_time = pygame.time.get_ticks()
         seconds = (self.now_time - self.game_end) / 1000
+        
 
         #print(seconds)
 
-        if seconds >= .4:
+        if seconds >= .1:
             return seconds
         else:
-            return .1
+            return .01
             print('bonananza')
             #Wait 3 seconds then return False   
             #return False
@@ -199,11 +200,13 @@ class Game:
             for enemy in self.enemies:
                 if self.player.rect().colliderect(enemy.rect()):
                     if self.touched == False:
+                        pygame.event.set_blocked(pygame.KEYDOWN)
                         self.game_end = pygame.time.get_ticks()
                     
                     self.touched = True
                     seconds = self.load_lose_screen()
-                    if seconds >= .4:
+                    if seconds >= .1:
+                        pygame.event.set_allowed(pygame.KEYDOWN)
                         return False
                     print(seconds)
                     
