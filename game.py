@@ -92,16 +92,20 @@ class Game:
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('Game Over!', False, (255,0,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
-                                        (self.display.get_height() / 2) - text_surface.get_height()/2)) 
+                                        (self.display.get_height() / 2) - text_surface.get_height()/ 2)) 
 
-        now_time = pygame.time.get_ticks()
-        seconds = (now_time - self.game_end) / 1000
+        self.now_time = pygame.time.get_ticks()
+        seconds = (self.now_time - self.game_end) / 1000
 
-        print(seconds)
+        #print(seconds)
 
-        if seconds >= 3:
+        if seconds >= .4:
+            return seconds
+        else:
+            return .1
+            print('bonananza')
             #Wait 3 seconds then return False   
-            return False
+            #return False
 
         
         #pygame.time.delay(1000)
@@ -198,7 +202,10 @@ class Game:
                         self.game_end = pygame.time.get_ticks()
                     
                     self.touched = True
-                    self.load_lose_screen()
+                    seconds = self.load_lose_screen()
+                    if seconds >= .4:
+                        return False
+                    print(seconds)
                     
                     
             '''

@@ -39,11 +39,7 @@ def play():
     if new_game.run():
         new_game.run()
     else:
-        #Load game over screen
-        if new_game.run() == False:
-            print('bye')
-            #new_game.load_lose_screen()
-            main_menu()
+        main_menu()
 
 
 
