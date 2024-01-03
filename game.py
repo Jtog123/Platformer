@@ -71,9 +71,6 @@ class Game:
 
 
         self.scroll = [0,0]
-        self.game_over = False
-
-        self.timer_seconds = 3
 
         self.game_end = 0
         self.touched = False
@@ -104,27 +101,23 @@ class Game:
             return seconds
         else:
             return .01
-            print('bonananza')
-            #Wait 3 seconds then return False   
-            #return False
 
-        
-        #pygame.time.delay(1000)
-
-
-     
-        # total amount of time weve been playing the game before death
-        #seconds = (now_time - self.game_end) / 1000
-        #print(seconds)
-
-        #now wait 3 seconds and return False
 
     def load_win_screen(self):
+        #Queue win music
         font = pygame.font.SysFont('assets/Handy00-YV1o.ttf', 30)
         text_surface = font.render('You Win!', False, (0,255,0))
         self.display.blit(text_surface,((self.display.get_width() / 2) - text_surface.get_width() / 2,
                                         (self.display.get_height() / 2) - text_surface.get_height()/2))
+        
+        self.win_time = pygame.time.get_ticks()
+        seconds = (self.win_time - self.game_end) / 1000
+        print(seconds)
 
+        if seconds >= 2:
+            return seconds
+        else:
+            return .01
 
 
         
@@ -223,26 +216,37 @@ class Game:
            '''
             for enemy2 in self.enemies2:
                 if self.player.rect().colliderect(enemy2.rect()):
-                    self.game_end = pygame.time.get_ticks()
-                    self.load_lose_screen()
-                    
-                    #return False
-                    #load game over screen
-                    #disable controls
-                    print('GAME OVER!')
-            
-            
-            if self.player.position[1] > self.display.get_height(): 
+                    if self.touched == False:
+                        pygame.event.set_blocked(pygame.KEYDOWN)
+                        self.game_end = pygame.time.get_ticks()
+
+                    self.touched = True
+                    seconds = self.load_lose_screen()
+                    if seconds >= .1:
+                        pygame.event.set_allowed(pygame.KEYDOWN)
+                        return False
+
+                     
+            if self.player.position[1] >= self.display.get_height(): 
+                print(self.player.position[1], self.display.get_height())
                 self.game_end = pygame.time.get_ticks()#or self.screen?
                 self.load_lose_screen()
+                if self.game_end / 1000 >= 3:
+                    return False
                 
-                #return False
-                print('game over!')
 
             if self.player.rect().colliderect(self.finishflag.rect()):
-                print('GAME HAS BEEN WON')
-                self.load_win_screen()
-            
+                if self.touched == False:
+                    pygame.event.set_blocked(pygame.KEYDOWN)
+                    self.game_end = pygame.time.get_ticks()
+                
+                self.touched = True
+                seconds = self.load_win_screen()
+
+                if seconds >= 2:
+                    pygame.event.set_allowed(pygame.KEYDOWN)
+                    return False
+      
 
             self.screen.blit(pygame.transform.scale(self.display, self.screen.get_size()), (0,0))
 
